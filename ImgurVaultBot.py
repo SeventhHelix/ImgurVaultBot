@@ -9,10 +9,18 @@ import pycurl
 import cStringIO
 import untangle
 
+"""
 CONSUMER_KEY = '----------------------'
 CONSUMER_SECRET = '---------------------------------------'
 ACCESS_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 ACCESS_SECRET = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+"""
+
+CONSUMER_KEY = '91IdwOKirBP0geaZZw'
+CONSUMER_SECRET = '7jr16joNcD19NlVsGnAcUF3qtoiCszMicRtedLqr0'
+ACCESS_KEY = '876757428-Vw0MyBHVaVVMfnlJbfACBARfDKef51HwDjxfzdQv'
+ACCESS_SECRET = 'o4GEFsp6IZFO2v65WQaJvsjR8blaW89oLPXD8YEuNY'
+IMGUR_API_DEV_KEY = 'f35a0768dbae7f9dcd271b188bd89ff0'
 
 debug = False
 
@@ -138,11 +146,10 @@ def getImageInfo():
         url = urlInfo[0]
         hash = urlInfo[1]
 
-    print "Success after " + str(attempts) + " attempts."
-
     description = getImageDescription(hash)
 
     if debug:
+        print "Success after " + str(attempts) + " attempts."
         print url
         print imageTitle
         print description
@@ -163,7 +170,7 @@ def printImageInfo():
 # Authenticates the Twitter user and posts the tweet
 def tweepyAuthAndTweet():
     urlInfo = getImageInfo()
-    imageUrl = urlInfo[0]
+    imageUrl = urlInfo[0].replace("imgur", "i.imgur")
     imageTitle = urlInfo[1]
 
     try:
@@ -177,8 +184,6 @@ def tweepyAuthAndTweet():
             message = imageTitle + " [" + imageUrl + "]"
         else:
             message = imageUrl
-
-        print "Updating status with: " + message
 
         api.update_status(message)
 
