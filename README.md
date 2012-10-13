@@ -5,7 +5,7 @@ Grabs a random image from Imgur and tweets it
 ##Notes
 A few things to consider. 
 
-First and foremost, this program has absolutely no idea what it is posting. Images could very well be NSFW, offensive to some, or just plain odd. I take no responsibility for any of the images tweeted, since there is no way to check the content of the image without actually looking at it. So, be cautious.
+First and foremost, this program has absolutely no idea what it is posting. Images could very well be NSFW, offensive to some, or just plain odd. I take no responsibility for any of the images tweeted, since there is no way to check the content of the image without actually looking at it. So, be cautious. I make no claim of ownership for any of the images found with this script. 
 
 I encourage you to read through Imgur's Terms of Service <a href="http://imgur.com/tos">here</a> and see their stance on images containing any sort of offensive or illegal content. If you see an image that you believe violates these terms, please email <a href="mailto:abuse@imgur.com">abuse@imgur.com</a> and let the fine people at Imgur know.
 
