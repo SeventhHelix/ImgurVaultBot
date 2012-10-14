@@ -1,4 +1,4 @@
-#RandomImgurTweeter
+#The Imgur Vault Twitter Bot
 
 Grabs a random image from Imgur and tweets it. You can see it in action at <a href="www.twitter.com/ImgurVault">www.twitter.com/ImgurVault</a>
 
