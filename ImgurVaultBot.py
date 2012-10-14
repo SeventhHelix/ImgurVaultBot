@@ -9,32 +9,26 @@ import pycurl
 import cStringIO
 import untangle
 
-"""
 CONSUMER_KEY = '----------------------'
 CONSUMER_SECRET = '---------------------------------------'
 ACCESS_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 ACCESS_SECRET = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-"""
+IMGUR_API_DEV_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
-CONSUMER_KEY = '91IdwOKirBP0geaZZw'
-CONSUMER_SECRET = '7jr16joNcD19NlVsGnAcUF3qtoiCszMicRtedLqr0'
-ACCESS_KEY = '876757428-Vw0MyBHVaVVMfnlJbfACBARfDKef51HwDjxfzdQv'
-ACCESS_SECRET = 'o4GEFsp6IZFO2v65WQaJvsjR8blaW89oLPXD8YEuNY'
-IMGUR_API_DEV_KEY = 'f35a0768dbae7f9dcd271b188bd89ff0'
 
 debug = False
 
 
 def main():
     if debug:
-        printImageInfo()
+        print_image_info()
     else:
-        tweepyAuthAndTweet()
+        tweepy_auth_and_tweet()
 
 
-# Generates a random imgur url
-# Not guaranteed to be an actual image
-def genRandomUrl():
+def gen_random_url():
+    """Generates a random imgur url, not guaranteed to be an actual image"""
+
     baseUrl = "http://www.imgur.com/"
     fileExt = ".jpg"
     genHash = ""
@@ -47,8 +41,9 @@ def genRandomUrl():
     return [url, genHash]
 
 
-# Tests the given url to check if it's a valid imgur link and not the 404 image
-def testUrl(url):
+def test_url(url):
+    """Tests the given url to check if it's a valid imgur link and not the 404 image"""
+
     req = requests.get(url)
 
     if (req.status_code != 404):
@@ -68,8 +63,8 @@ def testUrl(url):
     return False
 
 
-# Saves an image to the specified directory
-def saveImage(filename, imageData, path="~/tmp/RandomImgur/"):
+def save_image(filename, imageData, path="~/tmp/RandomImgur/"):
+    """Saves an image to the specified directory"""
     if not os.path.exists(path):
         os.makedirs(path)
 
@@ -77,27 +72,34 @@ def saveImage(filename, imageData, path="~/tmp/RandomImgur/"):
     outfile.write(imageData)
     outfile.close()
 
-# Gets the image title and/or caption in a formatted string
-def getImageDescription(hash):
+def get_image_description(hash):
+    """Gets the image title and/or caption in a formatted string"""
 
-    # Post the api.imgur server for the image information
-    response = cStringIO.StringIO()
-    c = pycurl.Curl()
-    values = [("key", IMGUR_API_DEV_KEY)]
+    # Getting the xml information for images can fail if the Imgur servers are busy or down
+    # In this case, just set the title and caption to ""
+    try:
+        # Post the api.imgur server for the image information
+        response = cStringIO.StringIO()
+        c = pycurl.Curl()
+        values = [("key", IMGUR_API_DEV_KEY)]
 
-    c.setopt(c.URL, "http://api.imgur.com/2/image/" + hash + ".xml")
-    c.setopt(c.HTTPPOST, values)
-    c.setopt(c.WRITEFUNCTION, response.write)
+        c.setopt(c.URL, "http://api.imgur.com/2/image/" + hash + ".xml")
+        c.setopt(c.HTTPPOST, values)
+        c.setopt(c.WRITEFUNCTION, response.write)
 
-    c.perform()
-    c.close()
+        c.perform()
+        c.close()
 
-    imageInfo = response.getvalue()
+        imageInfo = response.getvalue()
 
-    # Analyze the xml response
-    o = untangle.parse(imageInfo)
-    imageTitle = o.image.image.title.cdata
-    imageCaption = o.image.image.caption.cdata
+        # Analyze the xml response
+        o = untangle.parse(imageInfo)
+        imageTitle = o.image.image.title.cdata
+        imageCaption = o.image.image.caption.cdata
+
+    except:
+        imageTitle = ""
+        imageCaption = ""
 
 
     # Format the description, taking care to not go over 140 chars
@@ -132,21 +134,20 @@ def getImageDescription(hash):
 
 
 # Gets a random image' url from Imgur
-def getImageInfo():
+def get_image_info():
     attempts = 1
 
-    urlInfo = genRandomUrl()
-    url = urlInfo[0]
-    hash = urlInfo[1]
+    urlInfo = gen_random_url()
+
+    (url, hash) = urlInfo
 
     # Continuously generate urls until one succeeds
-    while not testUrl(url):
+    while not test_url(url):
         attempts += 1
-        urlInfo = genRandomUrl()
-        url = urlInfo[0]
-        hash = urlInfo[1]
+        urlInfo = gen_random_url()
+        (url, hash) = urlInfo
 
-    description = getImageDescription(hash)
+    description = get_image_description(hash)
 
     if debug:
         print "Success after " + str(attempts) + " attempts."
@@ -158,18 +159,17 @@ def getImageInfo():
 
 
 # Prints the imgur link for debug purposes
-def printImageInfo():
-    urlInfo = getImageInfo()
-    imageUrl = urlInfo[0]
-    imageDescription = urlInfo[1]
+def print_image_info():
+    urlInfo = get_image_info()
+    (imageUrl, imageDescription) = urlInfo
 
     print imageUrl
     print imageDescription
 
 
 # Authenticates the Twitter user and posts the tweet
-def tweepyAuthAndTweet():
-    urlInfo = getImageInfo()
+def tweepy_auth_and_tweet():
+    urlInfo = get_image_info()
     imageUrl = urlInfo[0].replace("imgur", "i.imgur")
     imageTitle = urlInfo[1]
 
@@ -187,8 +187,8 @@ def tweepyAuthAndTweet():
 
         api.update_status(message)
 
-    except tweepy.TweepError:
-        print "Tweepy failed"
+    except tweepy.TweepError, e:
+        print "Tweepy failed. %s" %  e
 
 if __name__ == "__main__":
     main()
