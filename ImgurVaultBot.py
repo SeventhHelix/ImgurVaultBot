@@ -22,6 +22,8 @@ ACCESS_KEY = '876757428-Vw0MyBHVaVVMfnlJbfACBARfDKef51HwDjxfzdQv'
 ACCESS_SECRET = 'o4GEFsp6IZFO2v65WQaJvsjR8blaW89oLPXD8YEuNY'
 IMGUR_API_DEV_KEY = 'f35a0768dbae7f9dcd271b188bd89ff0'
 
+api = 0
+
 debug = False
 
 
@@ -29,11 +31,13 @@ def main():
     if debug:
         print_image_info()
     else:
-        tweepy_auth_and_tweet()
+        tweepy_authenticate()
+        tweet_random_image()
+        # tweepy_auth_and_tweet()
 
 
 def gen_random_url():
-    """Generates a random imgur url, not guaranteed to be an actual image"""
+    """Generates a random imgur hash and url, not guaranteed to be an actual image"""
 
     baseUrl = "http://www.imgur.com/"
     fileExt = ".jpg"
@@ -158,10 +162,18 @@ def get_image_info():
     if debug:
         print "Success after " + str(attempts) + " attempts."
         print url
-        print imageTitle
         print description
 
     return [url, description]
+
+
+def format_message(imageUrl, imageTitle):
+    if imageTitle != "":
+        message = imageTitle + " [" + imageUrl + "]"
+    else:
+        message = imageUrl
+
+    return message
 
 
 # Prints the imgur link for debug purposes
@@ -171,30 +183,57 @@ def print_image_info():
 
     print imageUrl
     print imageDescription
+    print format_message(imageUrl, imageDescription)
+
+
+def tweet_random_image(numImages=1):
+    """Gets a random imgur image and tweets it"""
+
+    # Tweet numImages images
+    for n in range(numImages):
+        urlInfo = get_image_info()
+        imageUrl = urlInfo[0].replace("imgur", "i.imgur")
+        imageTitle = urlInfo[1]
+
+        message = format_message(imageUrl, imageTitle)
+
+        tweepy_auth_and_tweet(message)
+
+
+def tweepy_authenticate():
+    # Authenticate the global api
+    global api
+    auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+    auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+    api = tweepy.API(auth)
 
 
 # Authenticates the Twitter user and posts the tweet
-def tweepy_auth_and_tweet():
-    urlInfo = get_image_info()
-    imageUrl = urlInfo[0].replace("imgur", "i.imgur")
-    imageTitle = urlInfo[1]
+def tweepy_auth_and_tweet(message):
 
     try:
-        auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-        auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
-        api = tweepy.API(auth)
-
-        message = ""
-
-        if imageTitle != "":
-            message = imageTitle + " [" + imageUrl + "]"
-        else:
-            message = imageUrl
+        # auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+        # auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+        # api = tweepy.API(auth)
 
         api.update_status(message)
 
     except tweepy.TweepError, e:
-        print "Tweepy failed. %s" %  e
+        print "Tweepy failed. %s" % e
+
+
+def tweepy_get_direct_messages():
+
+    try:
+        # auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+        # auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+        # api = tweepy.API(auth)
+
+        print api.direct_messages()
+
+    except tweepy.TweepError, e:
+        print "Tweepy failed. %s" % e
+
 
 if __name__ == "__main__":
     main()
