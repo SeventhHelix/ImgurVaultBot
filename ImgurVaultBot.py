@@ -9,12 +9,18 @@ import pycurl
 import cStringIO
 import untangle
 
+"""
 CONSUMER_KEY = '----------------------'
 CONSUMER_SECRET = '---------------------------------------'
 ACCESS_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 ACCESS_SECRET = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-IMGUR_API_DEV_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+"""
 
+CONSUMER_KEY = '91IdwOKirBP0geaZZw'
+CONSUMER_SECRET = '7jr16joNcD19NlVsGnAcUF3qtoiCszMicRtedLqr0'
+ACCESS_KEY = '876757428-Vw0MyBHVaVVMfnlJbfACBARfDKef51HwDjxfzdQv'
+ACCESS_SECRET = 'o4GEFsp6IZFO2v65WQaJvsjR8blaW89oLPXD8YEuNY'
+IMGUR_API_DEV_KEY = 'f35a0768dbae7f9dcd271b188bd89ff0'
 
 debug = False
 
