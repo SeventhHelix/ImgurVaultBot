@@ -8,22 +8,22 @@ This bot supports basic commands via Direct Messages, which are only able to be 
 
 The general syntax is:
 <blockquote>
-gallery [subreddit name] [random/top] [optional num]
+<p>gallery [subreddit name] [random/top] [optional num]</p>
 
-random [optional num]
+<p>random [optional num]</p>
 </blockquote>
 
 Here are some example commands:
 <blockquote>
-gallery aww random 10
+<p>gallery aww random 10</p>
 
-gallery pics top 5
+<p>gallery pics top 5</p>
 
-gallery wtf top 
+<p>gallery wtf top </p>
 
-random 
+<p>random </p>
 
-random 5
+<p>random 5</p>
 </blockquote>
 
 If the image is labeled NSFW on the subreddit, it should be flagged as NSFW on the tweeted message as well. Of course, if people don't mark it as NSFW, there's not a whole lot one can do to warn others. 
