@@ -9,15 +9,20 @@ This bot supports basic commands via Direct Messages, which are only able to be 
 The general syntax is:
 <blockquote>
 gallery [subreddit name] [random/top] [optional num]
+
 random [optional num]
 </blockquote>
 
 Here are some example commands:
 <blockquote>
 gallery aww random 10
+
 gallery pics top 5
+
 gallery wtf top 
+
 random 
+
 random 5
 </blockquote>
 
