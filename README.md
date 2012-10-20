@@ -2,9 +2,30 @@
 
 Grabs a random image from Imgur and tweets it. You can see it in action at <a href="www.twitter.com/ImgurVault">www.twitter.com/ImgurVault</a>
 
+##Direct message commands
+
+This bot supports basic commands via Direct Messages, which are only able to be sent by specific users that ImgurVault follows (the admin group, if you will). The syntax is pretty simple, but there is only basic functionality at this time.
+
+The general syntax is:
+<blockquote>
+gallery [subreddit name] [random/top] [optional num]
+random [optional num]
+</blockquote>
+
+Here are some example commands:
+<blockquote>
+gallery aww random 10
+gallery pics top 5
+gallery wtf top 
+random 
+random 5
+</blockquote>
+
+If the image is labeled NSFW on the subreddit, it should be flagged as NSFW on the tweeted message as well. Of course, if people don't mark it as NSFW, there's not a whole lot one can do to warn others. 
+
 ##Notes
 
-First and foremost, this program has absolutely no idea what it is posting. I more or less let the bot do its own thing, and don't really moderate the images that are posted. Images could very well be NSFW (Not safe for work), offensive to some, or just plain odd. I take no responsibility for any of the images tweeted, since there is no way to check the content of the image without actually looking at it. So, be cautious. I make no claim of ownership for any of the images found and tweeted with this script. 
+First and foremost, this program has absolutely no idea what it is posting. I more or less let the bot do its own thing aside from a few direct message commands here and there, and don't really moderate the images that are posted. Images could very well be NSFW (Not safe for work), offensive to some, or just plain odd. I take no responsibility for any of the images tweeted, since there is no way to check the content of the image without actually looking at it. So, be cautious. I make no claim of ownership for any of the images found and tweeted with this script. 
 
 I encourage you to read through Imgur's Terms of Service <a href="http://imgur.com/tos">here</a> and see their stance on images containing any sort of offensive or illegal content. If you see an image that you believe violates these terms, please email <a href="mailto:abuse@imgur.com">abuse@imgur.com</a> and let the fine people at Imgur know.
 
