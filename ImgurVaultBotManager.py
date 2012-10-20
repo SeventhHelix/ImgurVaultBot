@@ -24,13 +24,13 @@ def main():
     (options, args) = parser.parse_args()
 
     if options.exec_direct_messages:
-        # Parse direct messages and exec their commands
-        print "Exec direct messages!"
+        # Parse direct messages and execute their commands
         cmdParser.parse_commands()
 
     elif options.gallery != "random":
         # Print images from specific gallery
-        print "Printing " + options.number + " images from gallery " + options.gallery + "!"
+        messages = imgController.get_formatted_gallery_messages(options.gallery, numImages=int(options.number))
+        twController.tweet_messages(messages)
 
     else:
         # just post random images

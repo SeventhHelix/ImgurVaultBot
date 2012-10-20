@@ -11,7 +11,8 @@ debug = False
 
 
 def main():
-    pass
+    imgController = ImgurController()
+    # imgController.get_formatted_messages_from_gallery("aww")
     # if debug:
     #     print_image_info()
     # else:
@@ -21,7 +22,10 @@ def main():
 
 
 class ImgurController(object):
-    """docstring for ImgurController"""
+    """
+    Class for finding random Imgur images, getting formatted messages with the url,
+    and other Imgur api functions
+    """
     def __init__(self):
         super(ImgurController, self).__init__()
         self.IMGUR_API_DEV_KEY = ''
@@ -63,6 +67,7 @@ class ImgurController(object):
 
     def save_image(self, filename, imageData, path="~/tmp/RandomImgur/"):
         """Saves an image to the specified directory"""
+
         if not os.path.exists(path):
             os.makedirs(path)
 
@@ -71,7 +76,11 @@ class ImgurController(object):
         outfile.close()
 
     def get_image_description(self, hash):
-        """Gets the image title and/or caption in a formatted string"""
+        """Gets the image title and/or caption in a formatted string
+            Note that the xml returned for random images vs. gallery/subreddit images
+            is a bit different, they have to be done differently. This is for random
+            images.
+        """
 
         # Getting the xml information for images can fail if the Imgur servers are busy or down
         # In this case, just set the title and caption to ""
@@ -129,8 +138,8 @@ class ImgurController(object):
 
         return imageFullDescription
 
-    # Gets a random image' url from Imgur
     def get_image_info(self):
+        """Gets a random image url from Imgur"""
         attempts = 1
 
         urlInfo = self.gen_random_url()
@@ -145,14 +154,10 @@ class ImgurController(object):
 
         description = self.get_image_description(hash)
 
-        if debug:
-            print "Success after " + str(attempts) + " attempts."
-            print url
-            print description
-
         return [url, description]
 
     def format_message(self, imageUrl, imageTitle):
+        """Returns a formatted message containing the url and title/desc if applicable"""
         if imageTitle != "":
             message = imageTitle + " [" + imageUrl + "]"
         else:
@@ -160,8 +165,8 @@ class ImgurController(object):
 
         return message
 
-    # Prints the imgur link for debug purposes
     def print_image_info(self):
+        """Prints the formatted message for debug purposes"""
         urlInfo = self.get_image_info()
         (imageUrl, imageDescription) = urlInfo
 
@@ -178,6 +183,68 @@ class ImgurController(object):
 
         message = self.format_message(imageUrl, imageTitle)
         return message
+
+    def get_gallery_values(self, gallery):
+        """Returns a list of [hash, title, nsfw] for the first page of a given gallery"""
+        try:
+            # Post the imgur server for the image information
+            url = "http://imgur.com/r/" + gallery + ".xml"
+            response = requests.get(url)
+
+            xml = response.text
+
+            # Analyze the xml response
+            doc = untangle.parse(xml)
+            items = doc.data.item
+
+            # Get a list of [hash, title] from the xml feed
+            images = [[img.hash.cdata, img.title.cdata, img.nsfw.cdata] for img in items]
+
+            return images
+
+        except Exception, e:
+            print "Failed: %s" % e
+            return []
+
+    def get_formatted_gallery_messages(self, gallery, type="random", numImages=1):
+        """Returns a list of random or top formatted messages from a gallery"""
+        imgIncr = 0
+        imageMessages = []
+
+        images = self.get_gallery_values(gallery)
+
+        for x in range(numImages):
+            if type == "random":
+                imgNumber = random.choice(range(len(images)))
+                randImage = images[imgNumber]
+                imgHash = randImage[0]
+                imgTitle = randImage[1]
+                imgNSFW = randImage[2]
+
+            elif type == "top":
+                topImage = images[imgIncr]
+                imgHash = topImage[0]
+                imgTitle = topImage[1]
+                imgNSFW = topImage[2]
+                imgIncr = imgIncr + 1
+
+            if imgNSFW == "true":
+                imgNSFW == "NSFW "
+            else:
+                imgNSFW = ""
+
+            imgUrl = " [" + imgNSFW + "http://i.imgur.com/" + imgHash + ".jpg]"
+            availTitleLen = 160 - len(imgUrl)
+
+            if len(imgTitle) > availTitleLen:
+                msg = imgTitle[0:availTitleLen - 3] + "..." + imgUrl
+
+            else:
+                msg = imgTitle + imgUrl
+
+            imageMessages.append(msg)
+
+        return imageMessages
 
 
 if __name__ == "__main__":

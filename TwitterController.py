@@ -1,8 +1,5 @@
 import twitter
-
-from email.utils import formatdate
-from datetime import datetime
-from time import mktime
+import time
 
 CONSUMER_KEY = ''
 CONSUMER_SECRET = ''
@@ -27,22 +24,32 @@ class TwitterController(object):
                                 access_token_key=ACCESS_KEY, access_token_secret=ACCESS_SECRET)
 
     def tweet_message(self, message):
+        """Tweet a given message"""
         try:
             self.api.PostUpdate(message)
 
         except twitter.TwitterError, e:
             print "Twitter failed. %s" % e
 
-    def get_direct_messages(self, minutesAgo=10):
-        try:
-            now = datetime.datetime.now() - datetime.timedelta(minutes=minutesAgo)
-            stamp = mktime(now.timetuple())
-            time = formatdate(timeval=stamp, localtime=False, usegmt=True)
+    def tweet_messages(self, messages):
+        """Tweet a list of messages"""
+        for msg in messages:
+            self.tweet_message(msg)
 
-            return self.api.GetDirectMessages(since=time)
+    def get_direct_messages(self, minutesAgo=10):
+        """Return a list of DirectMessage objects created less than minutesAgo prior to the call"""
+        try:
+            secondsAgo = minutesAgo * 60
+            timeSinceEpoch = int(time.time()) - secondsAgo
+
+            # return self.api.GetDirectMessages(since=time)
+            msgs = self.api.GetDirectMessages()
+            recentMsgs = [msg for msg in msgs if msg.GetCreatedAtInSeconds() >= timeSinceEpoch]
+            return recentMsgs
 
         except twitter.TwitterError, e:
             print "Twitter failed. %s" % e
+            return []
 
 
 if __name__ == "__main__":
