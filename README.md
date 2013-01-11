@@ -38,3 +38,5 @@ Considering the posting of these images to Twitter for the public eye to see, pl
 <blockquote><p>By uploading a file ... you grant Imgur a non-exclusive, royalty- free, perpetual, irrevocable worldwide license (with sublicense and assignment rights) to use, to display online and in any present or future media, to create derivative works of, to allow downloads of, and/or distribute any file or other content you upload to our servers.</p></blockquote>
 
 Lastly, this code verifies that the image exists by comparing the md5 hash of the image against Imgur's 404 image. If Imgur changes their 404 image, there's a good chance that this program will break and start posting invalid images. If you see this happening and this script isn't updated, please let me know on Github so I can fix it!
+
+It seems that Imgur has updated their API to v2, so this will have to be updated shortly to reflect that before v1 is deprecated.
